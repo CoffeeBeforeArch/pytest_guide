@@ -6,21 +6,34 @@ Specifically, we'll be looking at how to write test as individual functions, and
 
 # Writing Tests
 
-## Test Files
+In this section, we'll cover the basics of writing tests with `pytest`. This includes writing stand-alone tests as functions, and grouping tests into classes.
 
-By default, `pytest` will look for tests in files starting with `test_`. For example, we have a file named `test_functions.py` or `test_classes.py`, and `pytest` will look for valid tests within the file.
-
-## Test Functions
-
-Functions are one way we can specify tests with `pytest`. Similar to how `pytest` looks for tests in files starting with `test_`, `pytest` will also (by default) only consider functions starting with `test_` as tests.
-
-For example, we can write a simple test for a function, `square`, that multiples a number by itself:
+What exactly are we going to be testing? Let's test the two simple functions, `square` and `cube`:
 
 ```python
 # A simple function that squares a number
 def square(num):
     return num * num
 
+
+# Simple function that cubes a number
+def cube(num):
+    return square(num) * num
+```
+
+`square` simply squares a number by multiplying an input number `num` by itself. Similarly, `cube` cubes a number by multiplying an input number `num` by the result of `square`. These aren't terribly interesting, but they will serve just fine as functions we can test.
+
+## Test Files
+
+By default, `pytest` will look for tests in files starting with `test_`. For example, if we have a file named `test_functions.py` or `test_classes.py`, `pytest` will look for valid tests within those files.
+
+## Test Functions
+
+Functions are one way we can specify tests with `pytest`. Similar to how `pytest` looks for tests in files starting with `test_`, `pytest` will also (by default) only consider functions starting with `test_` as tests.
+
+For example, we can write a simple test for a function, `square`:
+
+```python
 # A simple test for our function 'square'
 def test_square():
     num = 5
@@ -28,15 +41,11 @@ def test_square():
     assert result == num ** 2
 ```
 
-In this example, `pytest` will find a single test (`test_square`) in our file (`square` will not be considered a test because it doesn't start with `test_`).
+In this example, `pytest` will find a single test (`test_square`) in our file. The function `square` will not be considered a test because it doesn't start with `test_`.
 
-Multiple tests can also live in the same file. For example, we could add another test for a function called `cube` in the same file as `test_square`:
+Multiple tests can live in the same file. For example, we could add another test for our function `cube` in the same file as `test_square`:
 
 ```python
-# Simple function that cubes a number
-def cube(num):
-    return square(num) * num
-
 # A second test in our file for the function 'cube'
 def test_cube():
     num = 5
@@ -44,11 +53,13 @@ def test_cube():
     assert result == num ** 3
 ```
 
+We'll keep both of these test functions (and the functions we're testing) in a file called `test_functions.py`.
+
 ## Test Classes
 
-We often want to group related tests together so that they can share things like common methods. We can do just this writing tests as methods of a class.
+We often want to group related tests so they can share things like common methods. We can do just this by writing tests as methods of a class.
 
-Similar to how `pytest` will look search for tests in files and functions with specific names, the same is true for classes. `pytest` will only look for tests in classes starting with `Test`, and class methods starting with `test_`.
+Just like how `pytest` searches for tests in files and functions with specific names, the same is true for classes. `pytest` will only look for tests in classes starting with `Test`, and class methods starting with `test_`.
 
 For example, we can group both of our tests from our previous example (`test_square` and `test_cube`) into a single class called `TestClasses`:
 
@@ -71,17 +82,19 @@ class TestClass:
 
 One important thing to note is that each of our tests will get their own copy for the `TestClass` object (they will not share the same object)
 
+We'll keep our `TestClass` with our test methods (and the functions we're testing) in a file called `test_classes.py`.
+
 # Running Tests
 
-Now that we have some background on what tests look like, we can look at how to find available tests and how to run them.
+Now that we have some background on what tests look like, we'll learn how to both query available tests and run them. For this, we'll be using our `test_functions.py` and `test_classes.py` files we previously created.
 
-## Seeing Available Tests with `collectonly`/`collect-only`
+## Finding Available Tests with `collectonly`/`collect-only`
 
-Before tests are executed, `pytest` goes through a startup phase called `collection`. During this phase, `pytest` will see what tests are available for execution.
+Before tests are executed, `pytest` goes through a phase called `collection`. During this phase, `pytest` will look for tests that it can execute.
 
-We often want to see what tests are available before we execute them (often because we want to run specific tests, every available test). We can do this by running `pytest --collectonly`/`pytest-collect-only` followed by the path to the directory containing tests (if no path is specified, the current working directory is searched).
+We often want to see what tests are available before we execute them (often because we want to run specific tests, not every available test). We can do this by running `pytest --collectonly`/`pytest-collect-only` followed by the path to the directory containing tests (if no path is specified, the current working directory is searched).
 
-For example, if we run `pytest --collectonly` in the directory with our test functions/class, we can see the following:
+For example, if we run `pytest --collectonly` in the directory with our `test_functions.py` and `test_classes.py` files, we can see the following:
 
 ```
 cba@cba$ pytest --collect-only
@@ -105,7 +118,7 @@ collected 4 items
 
 From this, we can see that all four of our tests have been collected (`test_square` and `test_cube` that we defined as functions, and the methods of the same name that are part of `TestClass`).
 
-Additionally, you can point pytest to a single file to see the tests available in that file. For example, here's the collect only log for our `test_functions.py` file:
+Additionally, you can point `pytest` to a single file to see the tests available in that file. For example, here's the collect only log for our `test_functions.py` file:
 
 ```
 cba@cba$ pytest --collectonly test_functions.py
@@ -123,7 +136,7 @@ collected 2 items
 ============================= 2 tests collected in 0.01s =============================
 ```
 
-Now, only two tests are collected (our test functions `test_square` and `test_cube`).
+Now, only two tests are collected (our test functions `test_square` and `test_cube` from `test_functions.py`).
 
 ## Running Tests
 
@@ -148,7 +161,7 @@ test_functions.py ..                                                            
 
 We can see from the logs that all 4 of our tests were collected, and all 4 passed!
 
-To run tests from a particular file, we need only pass the full path to the file. For example, here is the results of running all the tests in our `test_functions.py` file:
+To run tests in a particular file, we need only pass the full path to the file. For example, here is the results of running all tests in our `test_functions.py` file:
 
 ```
 cba@cba$ pytest test_functions.py
@@ -189,9 +202,9 @@ collected 4 items
 
 ```
 
-We can see that there is a hierarchy for our tests (`Module`, `Class` in the case of `TestClass`, and `Function`, which is our test function). We can narrow the execution of our tests by specifying more levels of this hierarchy in our `pytest` command.
+We can see that there is a hierarchy for our tests (`Module`, `Class` in the case of `TestClass`, and `Function`). We can narrow the execution of our tests by specifying levels of this hierarchy in our `pytest` command.
 
-As we've already seen, we run only tests within a `Module` (e.g., our file `test_functions.py`) by specfiying the file name in our `pytest` command. We can add more levels of the test hierarchy to our `pytest` command, separated by `::`. For example, we can run just `test_square` from our `test_functions.py` folder using `pytest test_functions.py::test_square`:
+As we've already seen, we run only tests within a `Module` (e.g., our file `test_functions.py`) by specfiying a file name in our `pytest` command. To add more levels of the test hierarchy to our `pytest` command, we can join them together separated by `::`. For example, we can run just `test_square` from our `test_functions.py` folder using `pytest test_functions.py::test_square` (specifying both the `Module` and `Function`):
 
 ```
 cba@cba$ test_functions.py::test_square
@@ -223,7 +236,7 @@ test_classes.py ..                                                              
 ========================================= 2 passed in 0.01s =========================================
 ```
 
-Now, only our two tests part of `TestClass` are collected and run (and pass!).
+Now, only our 2 tests part of `TestClass` are collected and run (and pass!).
 
 # Conclusion
 
