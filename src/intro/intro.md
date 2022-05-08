@@ -207,5 +207,25 @@ test_functions.py .                                                             
 ========================================= 1 passed in 0.01s =========================================
 ```
 
-Here, only a single test (`test_square`) is collected and run by `pytest` (and passes!).
+Here, only a single test (`test_square`) is collected and run by `pytest` (and passes!). Likewise, we could run just tests from a specific class (`TestClass` in our case):
+
+```
+cba@cba$ pytest test_classes.py::TestClass
+======================================== test session starts ========================================
+platform linux -- Python 3.9.7, pytest-7.1.1, pluggy-1.0.0
+benchmark: 3.2.2 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/cba/forked_repos/pytest/src/intro/00_intro
+plugins: benchmark-3.2.2
+collected 2 items
+
+test_classes.py ..                                                                            [100%]
+
+========================================= 2 passed in 0.01s =========================================
+```
+
+Now, only our two tests part of `TestClass` are collected and run (and pass!).
+
+# Conclusion
+
+By now, you should have a basic understanding of how tests written in `pytest` look. In the remainder of these guides, we'll be looking at a number of the builtin `pytest` features that make writing tests easier.
 
