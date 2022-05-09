@@ -4,6 +4,12 @@ Testing is a critical part of developer large and complex software. In this firs
 
 Specifically, we'll be looking at how to write test as individual functions, and grouping tests into a single class.
 
+## Links
+
+- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/intro/00_intro)
+- My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
+- My Email: CoffeeBeforeArch@gmail.com
+
 # Writing Tests
 
 In this section, we'll cover the basics of writing tests with `pytest`. This includes writing stand-alone tests as functions, and grouping tests into classes.
@@ -241,4 +247,14 @@ Now, only our 2 tests part of `TestClass` are collected and run (and pass!).
 # Conclusion
 
 By now, you should have a basic understanding of how tests written in `pytest` look. In the remainder of these guides, we'll be looking at a number of the builtin `pytest` features that make writing tests easier.
+
+Cheers,
+
+--Nick
+
+## Contact Information
+
+- My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
+- My GitHub: [Link](https://github.com/CoffeeBeforeArch)
+- My Email: CoffeeBeforeArch@gmail.com
 
