@@ -1,8 +1,10 @@
-# PyTest Introduction
+# `pytest` Introduction
 
-Testing is a critical part of developing large and complex software. In this first guide, we'll be looking at the basics of writing tests using the PyTest framework.
+Testing is a critical part of developing large and complex software. In this first guide, we'll be looking at the basics of writing tests using the `pytest` framework.
 
 Specifically, we'll be looking at how to write test as individual functions, and grouping tests into a single class.
+
+- Link to pytest documentation: [Link](https://docs.pytest.org/en/7.1.x/)
 
 ## Links
 
