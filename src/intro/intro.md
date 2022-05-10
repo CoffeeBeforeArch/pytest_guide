@@ -1,6 +1,6 @@
 # PyTest Introduction
 
-Testing is a critical part of developer large and complex software. In this first guide, we'll be looking at the basics of writing tests using the PyTest framework.
+Testing is a critical part of developing large and complex software. In this first guide, we'll be looking at the basics of writing tests using the PyTest framework.
 
 Specifically, we'll be looking at how to write test as individual functions, and grouping tests into a single class.
 
@@ -210,7 +210,7 @@ collected 4 items
 
 We can see that there is a hierarchy for our tests (`Module`, `Class` in the case of `TestClass`, and `Function`). We can narrow the execution of our tests by specifying levels of this hierarchy in our `pytest` command.
 
-As we've already seen, we run only tests within a `Module` (e.g., our file `test_functions.py`) by specfiying a file name in our `pytest` command. To add more levels of the test hierarchy to our `pytest` command, we can join them together separated by `::`. For example, we can run just `test_square` from our `test_functions.py` folder using `pytest test_functions.py::test_square` (specifying both the `Module` and `Function`):
+As we've already seen, we run only tests within a `Module` (e.g., our file `test_functions.py`) by specifying a file name in our `pytest` command. To add more levels of the test hierarchy to our `pytest` command, we can join them together separated by `::`. For example, we can run just `test_square` from our `test_functions.py` folder using `pytest test_functions.py::test_square` (specifying both the `Module` and `Function`):
 
 ```
 cba@cba$ test_functions.py::test_square
