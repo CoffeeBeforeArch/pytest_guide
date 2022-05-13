@@ -1,4 +1,4 @@
-# `pytest` Marks
+# Expecting Test Failures in `pytest`
 
 There are times that we expect our tests to fail. This may be because we have written our tests before the implementation of some feature is complete, or because we are specifically testing a failure path in our code.
 
