@@ -1,6 +1,6 @@
 # Introduction to `pytest` Fixtures
 
-Tests often require some amount of setup before they are able to evaluate anything. It is also often the case that different tests require the same setup. To handle the initialization of our test function, we can use fixtures.
+Tests often require some amount of setup. It is also often the case that different tests require the same setup. To handle the initialization of our test function, we can use fixtures.
 
 In this blog post, we'll be looking at the basics of `pytest` fixtures, how to write them, and some of the ways in which they can be configured.
 
@@ -14,7 +14,7 @@ In this blog post, we'll be looking at the basics of `pytest` fixtures, how to w
 
 # `pytest` Fixtures
 
-In the [previous blog post](../marks/parametrize.md), we continued looking at our simple test `test_square` that makes sure our function `square` is producing a correct result:
+In the [previous blog post](../marks/parametrize.md), we continued looking at our simple test, `test_square`:
 
 ```python
 # A simple function that squares a number
@@ -29,7 +29,7 @@ def test_square():
 
 ```
 
-So far, we've been hard-coding the input to our `square` function as `num = 5`. Instead, we can write a fixture that will provide an input, and effectively separate our test setup from the test body:
+In most of our examples, we've been hard-coding the input to our `square` function as `num = 5`. Instead, we can write a fixture that will provide `num` for us. This helps us separate our test setup code from the test body:
 
 ```python
 @pytest.fixture
@@ -37,7 +37,7 @@ def num():
     return 5
 ```
 
-Our test can request this fixture by adding the name of the fixture to its parameter list:
+Our test can request our fixture by adding the name of the fixture to its parameter list:
 
 ```python
 # A simple test for our function 'square'
@@ -46,7 +46,7 @@ def test_square(num):
     assert result == num ** 2
 ```
 
-When we run the test, our fixture will provide the value of `5` for `num`. Note, unlike with `@pytest.mark.parametrize`, test fixtures will not be shown as parameters to the test when we run collection:
+When we run the test, our fixture will provide the value of `5` for `num`. Note, unlike with `@pytest.mark.parametrize` marker, test fixtures will not show up as parameters to the test when we run collection:
 
 ```
 cba@cba$ pytest test_fixtures.py --collectonly
@@ -63,7 +63,7 @@ collected 1 item
 ===================================== 1 test collected in 0.00s =====================================
 ```
 
-Fixtures can be used by multiple tests (i.e., two or more tests can request the same fixtures). For example, both our `test_square` and `test_cube` tests can request the same `num` fixture:
+Fixtures can be used by multiple tests (i.e., two or more tests can request the same fixtures). For example, both our `test_square` and `test_cube` tests can request our `num` fixture:
 
 ```python
 # A simple test for our function 'square'
@@ -77,7 +77,7 @@ def test_cube(num):
     assert result == num ** 2
 ```
 
-Tests can also request multiple fixtures at once. For example, we could have two fixtures (e.g., `num1` and `num2`) requested by our `test_square` test:
+Tests can also request multiple fixtures. For example, we could have two fixtures (e.g., `num1` and `num2`) requested by `test_square`:
 
 ```python
 @pytest.fixture
@@ -94,9 +94,11 @@ def test_square(num1, num2):
     assert result == num ** 2
 ```
 
-There are times where we want a fixture to be used by every test to perform some kind of common setup that is needed. To do this in `pytest`, we can pass the `autouse=True` option to our `fixture` decorator.
+A common in testing is that we have some kind of common setup needed by all our tests. One solution to this problem is including a fixture that performs the setup in every test. However, this is prone to errors as test authors can easily forget to include the fixture (especially if there are many fixtures/parameters in the parameter list).
 
-For example, we can add another fixture to our test that prints that the test is starting:
+We can avoid this problem in `pytest` by specifying that a fixture should always be used, even if it is not specified in the parameter list of a test. This is done by setting `autouse=True` in the `@pytest.fixture` decorator.
+
+For example, we can add another fixture, `log_start`, to our test that notifies us that a test is starting:
 
 ```python
 @pytest.fixture
@@ -130,9 +132,9 @@ test_fixtures.py Test Starting!
 ========================================= 1 passed in 0.00s =========================================
 ```
 
-We see our string (`Test Starting!`) is printed to the string from our fixture, even though we did not directly request the fixture. Note, while not necessary, you are allowed to directly request an `autouse` fixture.
+We see our string `Test Starting!` is printed from our fixture even though we did not specifically request the fixture. Note, you are allowed to directly request `autouse` fixtures.
 
-Another useful feature of fixtures is sharing state. In many cases, we have a fixture that provides the same value(s) for multiple tests. This data that the fixture provides may be expensive to compute, so we would like to re-use it if possible. We can do just this by setting the `scope` in the fixture decorator.
+Another useful feature of fixtures is shared state. We often have a fixture that provides the same value(s) to multiple tests. The data our fixture provides may be expensive to compute, so ideally we would like to re-use the results. We can do just this by setting the `scope` in the fixture decorator.
 
 `scope` tells `pytest` when it should invoke a fixture. The valid scopes are:
 
@@ -141,9 +143,9 @@ Another useful feature of fixtures is sharing state. In many cases, we have a fi
 - `module`
 - `session`
 
-For example, default `function` tells `pytest` that the fixture should be invoked once per function.
+For example, the default scope of `function` tells `pytest` that the fixture should be invoked once per function.
 
-Consider our simple tests from earlier (`test_square` and `test_cube`) that use the same fixture (`num`). We can change the `scope` of the fixture `num` to `module` so that the fixture is only invoked once even though it is used by two different test functions. Additionally, we can add a print to the fixture to help show that the fixture is only invoked once:
+Consider our simple tests from earlier (`test_square` and `test_cube`) that use the same fixture (`num`). We can change the `scope` of the fixture `num` to `module` so that the fixture is only invoked once, and the result is re-used for other tests (in the module). We will also add a print to the fixture to help illustrate this point:
 
 ```python
 @pytest.fixture(scope='module')
@@ -179,9 +181,9 @@ test_fixtures.py Generating an input value!
 ========================================= 2 passed in 0.00s =========================================
 ```
 
-From the logs we see that both tests are collected and run (and pass), but the print from our fixture is only executed once!
+We see that both tests are collected and run (and pass), but the print from our fixture is only executed once!
 
-If we switch the scope of our fixture back the default (`function`), we get the following:
+If we switch the scope of our fixture back the default `function`, we get the following:
 
 ```
 cba@cba$ pytest test_fixtures.py -s
@@ -203,7 +205,7 @@ Two prints from our fixture! It was invoked twice (once per test in our module)!
 
 # Conclusion
 
-Fixtures provide test writers the ability to move setup code out of the test functions/classes and make it more re-usable. It also provides a number of useful builtin features like caching results for a specified scope and automatic use.
+Fixtures provide test writers the ability to move setup code out of test functions/classes in a way that makes it scalable/re-usable. They also provides a number of useful builtin features like result caching for a specified scope and automatic use.
 
 In future posts, we'll be looking at some of the more advanced usage of `pytest` fixtures.
 
