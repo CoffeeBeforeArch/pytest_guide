@@ -1,6 +1,6 @@
 # Introduction to `pytest` Fixtures
 
-Tests often require some amount of setup. It is also often the case that different tests require the same setup. To handle the initialization of our test function, we can use fixtures.
+Tests often require some initial setup, and it is often the case that different tests require the same setup. To handle the initialization of our test functions, we can use fixtures.
 
 In this blog post, we'll be looking at the basics of `pytest` fixtures, how to write them, and some of the ways in which they can be configured.
 
