@@ -64,7 +64,7 @@ test_param_fowarding.py The value of num is 1
 
 As expected, we see a print out for each value of `num`. However, we have introduced some test setup code into our test function. While this might be ok for a trivial example, we should prefer (in general) to have our test setup handled by test fixtures, and keep our test functions largely free of setup code.
 
-Let's move our logging to a test fixture. We can write our logging fixtures as follows:
+Let's move our logging to a test fixture. We can write our logging fixture as follows:
 
 ```python
 @pytest.fixture
@@ -74,7 +74,7 @@ def log_num(num):
 
 We know that a test can request a fixture by adding the fixture name to its parameter list, but how does a test function call a fixture using an argument?
 
-Simple! It happens automatically! As long as the parameter list for the test contains the same named parameter that the fixture requires, it will automatically be forwarded!
+Simple! It happens automatically! As long as the parameter list for the test contains the same named parameter that the fixture requires (`num` in this case), it will automatically be forwarded!
 
 For example, let's update our test to use this new fixture:
 
@@ -107,8 +107,7 @@ test_param_fowarding.py The value of num is 1
 ========================================= 5 passed in 0.01s =========================================
 ```
 
-It is also possible to forward parameters to fixtures that have not been requested directly (i.e., `autouse` fixtures). For example, we can remove `log_num` from the parameter list of `test_square`, and add `autouse=True` to our logging fixture `log_num`:
-
+It is also possible to forward parameters to fixtures that have not been directly requested (i.e., `autouse` fixtures). For example, we can remove `log_num` from the parameter list of `test_square`, and add `autouse=True` to our logging fixture `log_num`:
 
 ```python
 @pytest.fixture(autouse=True)
@@ -122,7 +121,7 @@ def test_square(num):
     assert result == num ** 2
 ```
 
-If we run the test, we again see the same output:
+When we run the test, we again see the same output:
 
 ```
 cba@cba$ pytest test_param_fowarding.py -s
@@ -143,7 +142,7 @@ test_param_fowarding.py The value of num is 1
 ========================================= 5 passed in 0.01s =========================================
 ```
 
-Note, we are implicitly relying on our test having a parameter named `num` that can be forwarded to the fixture. If for some reason we did not have `num` in our test's parameter list, we would get an error like the following:
+Note, we are implicitly relying on our test having a parameter named `num` that can be forwarded to our fixture. If for some reason we did not have `num` in our test's parameter list, we would get an error like the following:
 
 ```
 _________________________________ ERROR at setup of test_square[1] __________________________________
