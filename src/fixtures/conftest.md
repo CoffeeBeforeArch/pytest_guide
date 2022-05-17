@@ -8,7 +8,7 @@ In this blog post, we'll be looking at a special file in `pytest` called `confte
 
 ## Links
 
-- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/intro/00_intro)
+- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/fixtures/01_conftest)
 - My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
 - My Email: CoffeeBeforeArch@gmail.com
 
