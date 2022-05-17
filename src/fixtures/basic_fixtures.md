@@ -74,7 +74,7 @@ def test_square(num):
 # A simple test for our function 'cube'
 def test_cube(num):
     result = square(num)
-    assert result == num ** 2
+    assert result == num ** 3
 ```
 
 Tests can also request multiple fixtures. For example, we could have two fixtures (e.g., `num1` and `num2`) requested by `test_square`:
@@ -90,8 +90,11 @@ def num2():
 
 # A simple test for our function 'square'
 def test_square(num1, num2):
-    result = square(num)
-    assert result == num ** 2
+    result1 = square(num1)
+    assert result1 == num ** 2
+    
+    result2 = square(num2)
+    assert result2 == num ** 2
 ```
 
 A common in testing is that we have some kind of common setup needed by all our tests. One solution to this problem is including a fixture that performs the setup in every test. However, this is prone to errors as test authors can easily forget to include the fixture (especially if there are many fixtures/parameters in the parameter list).
@@ -161,7 +164,7 @@ def test_square(num):
 # A simple test for our function 'cube'
 def test_cube(num):
     result = square(num)
-    assert result == num ** 2
+    assert result == num ** 3
 ```
 
 When we run run both tests in our module, we get the following:
