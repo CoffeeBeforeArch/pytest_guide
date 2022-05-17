@@ -12,7 +12,7 @@ In this blog post, we'll be looking at how we can forward test parameters to tes
 - My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
 - My Email: CoffeeBeforeArch@gmail.com
 
-# `pytest` Fixtures
+# `pytest` Parameter Forwarding
 
 Recall our simple parametrized test from [an earlier blog post](../marks/parametrize.md):
 
