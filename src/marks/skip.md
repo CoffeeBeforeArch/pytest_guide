@@ -6,7 +6,7 @@ There are times we want to skip tests. This may be because a test takes too long
 
 ## Links
 
-- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/marks)
+- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/marks/00_skip)
 - My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
 - My Email: CoffeeBeforeArch@gmail.com
 

@@ -8,7 +8,7 @@ In this blog post, we'll be looking at how to use the `pytest.mark.xfail` marker
 
 ## Links
 
-- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/marks)
+- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/marks/01_xfail)
 - My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
 - My Email: CoffeeBeforeArch@gmail.com
 
