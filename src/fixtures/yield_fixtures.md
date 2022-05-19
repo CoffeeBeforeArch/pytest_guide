@@ -1,8 +1,8 @@
 # `pytest` `yield` Fixtures
 
-In the past few blog posts, we've talked about how fixtures can be used for test setup and providing values to a test. However, there times where we want a fixture perform some setup actions before a test then perform some teardown actions after the test executes.
+In the past few blog posts, we've talked about how fixtures can be used for test setup. However, there are times where we want a fixture perform both setup and teardown actions.
 
-I this blog post, we'll be looking at how we can do this with `yield` fixtures.
+In this blog post, we'll be looking at how we can do this with `yield` fixtures.
 
 - Link to pytest documentation: [Link](https://docs.pytest.org/en/7.1.x/)
 
@@ -12,9 +12,9 @@ I this blog post, we'll be looking at how we can do this with `yield` fixtures.
 - My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
 - My Email: CoffeeBeforeArch@gmail.com
 
-# `pytest` Fixtures
+# `yield` Fixtures
 
-Recall our simple test from the past few examples:
+Recall our test from the past few posts:
 
 ```python
 # A simple function that squares a number
@@ -28,7 +28,7 @@ def test_square(num):
 
 ```
 
-Our test uses a simple fixture, `num`, that provides the number `5` to our test.
+Our test uses a simple fixture, `num`, that provides the value `5` to our test.
 
 ```python
 @pytest.fixture
@@ -36,9 +36,9 @@ def num():
     return 5
 ```
 
-But what if we wanted our test fixture to also to do something when the test exits? For this, we can use `yield` fixtures.
+But what if we wanted our test fixture to also do something when the test exits? For this, we can use `yield` fixtures.
 
-`yield` fixtures allow us to run a fixture before before a test starts, and the resume the fixture after the test ends. For example, let's change our fixture to print out a string before we `yield` a value, then print out another string after the fixture resumes:
+`yield` fixtures allow us to run a fixture before a test starts, then resume it after the test ends. For example, we can change our fixture to print a string before we `yield` a value, then print another string after the fixture resumes:
 
 ```python
 @pytest.fixture
@@ -48,7 +48,7 @@ def num():
   print('Finishing up!')
 ```
 
-Instead of calling return, our function now calls `yield` so it can be resumed after our test finishes. Additionally, we can add a print to our test to show that our fixture prints our outside of test execution:
+Instead of calling return, our function now calls `yield` so it can be resumed after our test finishes. Additionally, we can add a print to our test to show that our fixture prints outside of test execution:
 
 ```python
 # A simple test for our function 'square'
@@ -78,11 +78,11 @@ Running our test!
 ========================================= 1 passed in 0.00s =========================================
 ```
 
-We see all three strings in the order we expect! Our string before `yield` in our fixture is printed before the string from our test body, which is printed before the string after the `yield` in our fixtures.
+We see all three strings in the order we expect! Our string before `yield` in our fixture is printed before the string from our test body, which is printed before the string after the `yield` in our fixture.
 
 # Conclusion
 
-`yield` fixtures are incredibly useful when we need to acquire a resource for our test, but also free that resource when the test completes.
+`yield` fixtures are incredibly useful when we need to perform both setup and teardown actions for a test.
 
 In future posts, we'll be looking at some of the other more advanced ways we can configure `pytests`.
 
