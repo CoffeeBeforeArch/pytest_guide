@@ -8,7 +8,7 @@ In this blog post, we'll be looking at the basics of using `pytest` caches.
 
 ## Links
 
-- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/fixtures/00_basic_fixtures)
+- Code from this blog post: [Link](https://github.com/CoffeeBeforeArch/pytest/tree/main/src/caches/00_basic_caches)
 - My YouTube Channel: [Link](https://www.youtube.com/coffeebeforearch)
 - My Email: CoffeeBeforeArch@gmail.com
 
