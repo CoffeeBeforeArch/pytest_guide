@@ -66,10 +66,134 @@ collected 5 items
 ==================================== 5 tests collected in 0.00s =====================================
 ```
 
-In many cases, we want to dynamically parametrize using some command line input.
+In many cases, we want to dynamically parametrize using some command line input. For this, we can combine the hook `pytest_addoption` with `pytest_generate_tests`.
+
+For example, let's create an option called `input_file` that we can use to pass into our test a path to a file containing test variants:
+
+```python
+def pytest_addoption(parse):
+    parser.addoption(
+      '--input_file',
+      action='store',
+      default='',
+      help='Input file with test variants'
+    )
+```
+
+Our input file (`input.txt`) will just be a simple text file with numbers specified on different lines:
+
+```txt
+1
+2
+3
+4
+5
+```
+
+We can then have our `pytest_generate_tests` hook access this command line option and read in test variants:
+
+```python
+def pytest_generate_tests(metafunc):
+    # Check if the num fixture is used
+    if "num" in metafunc.fixturenames:
+        # Get the command line option
+        input_file = metafunc.config.getoption("--input_file")
+
+        # Read the data from the input file (if specified)
+        data = []
+        if input_file:
+            with open(input_file, "r") as f:
+                lines = f.readlines()
+            data = [int(line) for line in lines]
+
+        # Parametrize the test
+        metafunc.parametrize("num", data)   
+```
+
+Here, we check to if our test requested the `num` fixture. If it did, we try and get the input file from our command line option. If an input file was specified, we load in the data. Otherwise, we just parametrize with an empty list.
+
+When we run collection for our test without specifying our command line option, we see a single test is collected:
+
+```
+cba@cba$ pytest --collectonly
+======================================== test session starts ========================================
+platform linux -- Python 3.10.4, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+benchmark: 3.2.2 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/cba/forked_repos/pytest/src/hooks/01_generate_tests/01_input_file
+plugins: benchmark-3.2.2
+collected 1 item                                                                                    
+
+<Module test_fixtures.py>
+  <Function test_square[num0]>
+
+===================================== 1 test collected in 0.01s =====================================
+```
+
+However, this test will be skipped if we try to run it (if we parametrize with an empty list, our test doesn't have an input!):
+
+```
+cba@cba$ pytest test_fixtures.py 
+======================================== test session starts ========================================
+platform linux -- Python 3.10.4, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+benchmark: 3.2.2 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/cba/forked_repos/pytest/src/hooks/01_generate_tests/01_input_file
+plugins: benchmark-3.2.2
+collected 1 item                                                                                    
+
+test_fixtures.py s                                                                            [100%]
+
+======================================== 1 skipped in 0.01s =========================================
+```
+
+However, we can see our test gets parametrized with the 5 variants from our `input.txt` file when we specify it as an input:
+
+```
+cba@cba$ pytest --collectonly test_fixtures.py --input_file input.txt
+======================================== test session starts ========================================
+platform linux -- Python 3.10.4, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+benchmark: 3.2.2 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/cba/forked_repos/pytest/src/hooks/01_generate_tests/01_input_file
+plugins: benchmark-3.2.2
+collected 5 items                                                                                   
+
+<Module test_fixtures.py>
+  <Function test_square[1]>
+  <Function test_square[2]>
+  <Function test_square[3]>
+  <Function test_square[4]>
+  <Function test_square[5]>
+
+==================================== 5 tests collected in 0.01s =====================================
+```
+
+If we add more lines to our `input.txt`, we end up seeing more test variants:
+
+```
+cba@cba$ pytest --collectonly test_fixtures.py --input_file input.txt
+======================================== test session starts ========================================
+platform linux -- Python 3.10.4, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+benchmark: 3.2.2 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/cba/forked_repos/pytest/src/hooks/01_generate_tests/01_input_file
+plugins: benchmark-3.2.2
+collected 9 items                                                                                   
+
+<Module test_fixtures.py>
+  <Function test_square[1]>
+  <Function test_square[2]>
+  <Function test_square[3]>
+  <Function test_square[4]>
+  <Function test_square[5]>
+  <Function test_square[6]>
+  <Function test_square[7]>
+  <Function test_square[8]>
+  <Function test_square[9]>
+
+==================================== 9 tests collected in 0.00s =====================================
+```
 
 # Conclusion
 
+Dynamic parametrization can be useful when we want to define test variants in a separate file instead of decorating tests directly with `@pytest.mark.parametrize`. In future blog posts, we'll look at some of the other useful built in hooks in `pytest`.
 
 Cheers,
 
