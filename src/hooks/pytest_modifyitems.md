@@ -29,9 +29,9 @@ def test_square(num):
     assert result == num ** 2
 ```
 
-There are times we want to skip some of our tests after they have been collected. For this, we can us the hook `pytest_collection_modifyitems` which is called after collection.
+There are times we want to skip tests after collection. For this, we can use the `pytest_collection_modifyitems` hook.
 
-For example, we can implement a simple hook that skips every other test:
+`pytest_collection_modifyitems` is called after the `pytest` collection phase. For our case, we will implement a simple hook that skips every other test:
 
 ```python
 def pytest_collection_modifyitems(items, config):
@@ -41,7 +41,9 @@ def pytest_collection_modifyitems(items, config):
             item.add_marker(pytest.mark.skip(reason="Skipping every other test!"))
 ```
 
-For every other test, we're adding an additional `pytest.mark.skip` marker to skip the test. When we run all our tests, we get the following:
+To our hook we pass `items` and `config`. `items` is just a list of our collected tests that we can iterate over, and `config` is the same builtin `pytest` `config` object that we've used in previous blog posts.
+
+When we run our tests, we get the following:
 
 ```
 cba@cba$ pytest test_modify_collection.py 
@@ -59,9 +61,9 @@ test_modify_collection.py .s.s.s.s.s                                            
 
 Half of our tests run, while the other half (marked with `pytest.mark.skip` after collection) are skipped.
 
-In many cases, we will want to modify collection based on how a test is parametrized. For example, there may be certain combinations of inputs that are invalid that we want to filter out.
+In many cases, we want to modify collection based on how a test is parametrized. For example, there may be certain combinations of inputs that are invalid that we want to filter out.
 
-We can access the values of items through `callspec`. For example, here's the example of the `pytest_collection_modifyitems` hook where deselect a test if the value of `num` is `1` or `5`.:
+We can access the values of items through `callspec`. For example, a version of our `pytest_collection_modifyitems` hook where tests are deselect a test if the value of `num` is `1` or `5`:
 
 ```python
 def pytest_collection_modifyitems(items, config):
@@ -84,9 +86,9 @@ def pytest_collection_modifyitems(items, config):
     items[:] = selected
 ```
 
-Here, we access the dictionary under `item.callspec.params` to get the values of the input parameters to our test variants. To update which tests are deselected, we can add the deselected test list to `config.hook.pytest_deselected`. To updated the selected tests, we simply modify the `items` list passed to the hook.
+We access the dictionary under `item.callspec.params` to get the values of the input parameters of our tests. We can then add the deselected test list to `config.hook.pytest_deselected`. Our selected tests can then be updated by modifying the `items` list directly.
 
-When we run collection for our test, we get the following:
+When we run collection, we get the following:
 
 ```
 cba@cba$ pytest --collectonly test_modify_collection.py
@@ -110,7 +112,7 @@ collected 10 items / 2 deselected / 8 selected
 =========================== 8/10 tests collected (2 deselected) in 0.00s ============================
 ```
 
-Here, we see that `pytest` initiall collected `10` items, but `2` tests (with input `1` and input `5`) are then deselected with our hook.
+We see that `pytest` initially collected `10` items, but `2` tests (with input `1` and input `5`) are then deselected by our hook.
 
 # Conclusion
 
